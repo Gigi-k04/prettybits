@@ -75,6 +75,7 @@ const riverTableWorkshops = [
 const standardDates: WorkshopDate[] = [
   
   { date: "Saturday, 5 September", time: "11:00 AM", full: false },
+  
   { date: "Sunday, 13 September", time: "2:00 PM", full: false },
   { date: "Saturday, 26 September", time: "2:00 PM", full: false },
   { date: "Sunday, 27 September", time: "11:00 AM", full: false },
@@ -130,6 +131,26 @@ function WorkshopOptionCard({
   );
 }
 
+function getUpcomingWorkshopDates(dates: WorkshopDate[]): WorkshopDate[] {
+  const now = new Date();
+  const year = 2026;
+
+  return dates.filter((workshop) => {
+    const datePart = workshop.date
+      .replace(
+        /^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),\s*/,
+        ""
+      );
+
+    const workshopDate = new Date(`${datePart} ${year}`);
+
+    // Keep the date if it hasn't passed yet.
+    return workshopDate >= now;
+  });
+}
+
+const upcomingRiverTableDates = getUpcomingWorkshopDates(riverTableDates);
+
 function WorkshopsPage() {
   const [bookingModal, setBookingModal] = useState<"standard" | "river" | null>(
     null
@@ -137,10 +158,13 @@ function WorkshopsPage() {
   const [showAllDates, setShowAllDates] = useState(false);
 
   const DATES_PREVIEW_COUNT = 8;
-  const visibleDates = showAllDates
-    ? standardDates
-    : standardDates.slice(0, DATES_PREVIEW_COUNT);
 
+  const upcomingStandardDates = getUpcomingWorkshopDates(standardDates);
+
+  const visibleDates = showAllDates
+    ? upcomingStandardDates
+    : upcomingStandardDates.slice(0, DATES_PREVIEW_COUNT);
+    
   return (
     <>
       {/* HERO */}
@@ -224,7 +248,7 @@ function WorkshopsPage() {
         <p className="font-script text-6xl text-primary">When</p>
         <h2 className="mt-1 font-display text-3xl font-semibold">Upcoming workshop dates</h2>
 
-        {standardDates.length > 0 ? (
+        {upcomingStandardDates.length > 0 ? (
           <>
             <div className="mt-8 flex flex-wrap gap-2.5">
               {visibleDates.map((d, i) => (
@@ -252,7 +276,7 @@ function WorkshopsPage() {
               ))}
             </div>
 
-            {standardDates.length > DATES_PREVIEW_COUNT && (
+            {upcomingStandardDates.length > DATES_PREVIEW_COUNT && (
               <button
                 type="button"
                 onClick={() => setShowAllDates((v) => !v)}
@@ -260,7 +284,7 @@ function WorkshopsPage() {
               >
                 {showAllDates
                   ? "Show fewer dates"
-                  : `Show all ${standardDates.length} dates`}
+                  : `Show all ${upcomingStandardDates.length} dates`}
                 <ChevronDown
                   className={`h-4 w-4 transition-transform ${
                     showAllDates ? "rotate-180" : ""
@@ -429,11 +453,11 @@ function WorkshopsPage() {
         onClose={() => setBookingModal(null)}
         title="Book a workshop"
       >
-        <BookingForm
-          workshopOptions={standardWorkshops}
-          availableDates={standardDates}
-          onClose={() => setBookingModal(null)}
-        />
+       <BookingForm
+        workshopOptions={standardWorkshops}
+        availableDates={upcomingStandardDates}
+        onClose={() => setBookingModal(null)}
+      />
       </Modal>
 
       <Modal
@@ -443,7 +467,7 @@ function WorkshopsPage() {
       >
         <BookingForm
           workshopOptions={riverTableWorkshops}
-          availableDates={riverTableDates}
+          availableDates={upcomingRiverTableDates}
           onClose={() => setBookingModal(null)}
         />
       </Modal>
