@@ -1,5 +1,5 @@
 import keychainImage from "@/assets/Keychain-StarterKIt.jpeg";
-import BookmarkImage from "@/assets/Bookmark-StarterKIt.jpeg";
+import BookmarkImage from "@/assets/Bookmark-StarterKit.jpeg";
 import CementCoasterImage from "@/assets/CementCoaster-StarterKit.jpeg";
 import TrinketTrayImage from "@/assets/TrinketTray-StarterKit.jpeg";
 import siliconeCoasterImage from "@/assets/SiliconeCoaster-StarterKit.jpeg";
