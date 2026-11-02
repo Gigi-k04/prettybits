@@ -5,16 +5,23 @@ import tailwindcss from "@tailwindcss/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 import sitemap from "vite-plugin-sitemap";
 
+const sitemapPlugin = sitemap({
+  hostname: "https://prettybits.co.za",
+  generateRobotsTxt: true,
+  dynamicRoutes: ["/workshops", "/courses", "/products", "/starter-kit", "/contact"],
+});
+
 export default defineConfig({
   plugins: [
     TanStackRouterVite(),
     react(),
     tailwindcss(),
     tsconfigPaths(),
-    sitemap({
-  hostname: "https://prettybits.co.za",
-  generateRobotsTxt: true,
-  dynamicRoutes: ["/workshops", "/courses", "/products", "/starter-kit", "/contact"],
-}),
+    {
+      ...sitemapPlugin,
+      // Generate only after Vite writes dist; closeBundle also runs on build failure.
+      closeBundle: undefined,
+      writeBundle: sitemapPlugin.closeBundle,
+    },
   ],
 });
