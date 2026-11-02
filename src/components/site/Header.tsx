@@ -14,16 +14,16 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-background/80 border-b border-border/60">
-      <div className="mx-auto max-w-7xl px-6 lg:px-10 h-20 flex items-center justify-between">
+      <div className="mx-auto max-w-7xl px-6 lg:px-10 h-20 flex items-center justify-between lg:grid lg:grid-cols-[1fr_auto_1fr]">
         <Link to="/" className="flex items-baseline gap-1 group">
           <span className="font-script text-5xl text-primary leading-none">PrettyBits</span>
-          <span className="hidden lg:inline-block ml-3 pl-3 border-l border-teal/40 text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground self-center">
+          <span className="hidden min-[1600px]:inline-block ml-3 pl-3 border-l border-teal/40 text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground self-center">
             Resin&nbsp;Art&nbsp;·&nbsp;Workshops
           </span>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+        <nav className="hidden lg:flex items-center justify-center gap-4 xl:gap-6">
           <Link
             to="/"
             className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
@@ -82,16 +82,25 @@ export function Header() {
           </Link>
 
           <Link
+            to="/starter-kit"
+            className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+            activeProps={{ className: "text-primary" }}
+          >
+            Starter Kits
+          </Link>
+
+          <Link
             to="/contact"
             className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
             activeProps={{ className: "text-primary" }}
           >
             Contact
           </Link>
+          
         </nav>
 
         <button
-          className="md:hidden p-2 text-foreground"
+          className="lg:hidden p-2 text-foreground"
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
         >
@@ -101,15 +110,23 @@ export function Header() {
 
       {/* Mobile Drawer Menu */}
       {open && (
-        <div className="md:hidden border-t border-border/60 bg-background">
+        <div className="lg:hidden border-t border-border/60 bg-background">
           <div className="px-6 py-6 flex flex-col gap-4">
-            <Link to="/" onClick={() => setOpen(false)} className="text-base font-medium text-foreground">
+            <Link
+              to="/"
+              onClick={() => setOpen(false)}
+              className="text-base font-medium text-foreground"
+            >
               Home
             </Link>
 
             {/* Mobile Workshops Accordion */}
             <div className="flex flex-col gap-2">
-              <Link to="/workshops" onClick={() => setOpen(false)} className="text-base font-medium text-primary">
+              <Link
+                to="/workshops"
+                onClick={() => setOpen(false)}
+                className="text-base font-medium text-primary"
+              >
                 Workshops
               </Link>
               <div className="pl-4 flex flex-col gap-2 border-l border-border">
@@ -127,14 +144,33 @@ export function Header() {
               </div>
             </div>
 
-            <Link to="/courses" onClick={() => setOpen(false)} className="text-base font-medium text-foreground">
+            <Link
+              to="/courses"
+              onClick={() => setOpen(false)}
+              className="text-base font-medium text-foreground"
+            >
               Courses
             </Link>
-            <Link to="/products" onClick={() => setOpen(false)} className="text-base font-medium text-foreground">
+            <Link
+              to="/products"
+              onClick={() => setOpen(false)}
+              className="text-base font-medium text-foreground"
+            >
               Products
             </Link>
-            <Link to="/contact" onClick={() => setOpen(false)} className="text-base font-medium text-foreground">
+            <Link
+              to="/contact"
+              onClick={() => setOpen(false)}
+              className="text-base font-medium text-foreground"
+            >
               Contact
+            </Link>
+            <Link
+              to="/starter-kit"
+              onClick={() => setOpen(false)}
+              className="text-base font-medium text-foreground"
+            >
+              Starter Kits
             </Link>
           </div>
         </div>

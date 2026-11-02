@@ -18,9 +18,16 @@ export const Route = createFileRoute("/products")({
   head: () => ({
     meta: [
       { title: "Products — PrettyBits Resin Art" },
-      { name: "description", content: "Explore custom wedding ring trays, wedding favours, floral keepsakes, and bespoke handcrafted resin art at PrettyBits Cape Town." },
+      {
+        name: "description",
+        content:
+          "Explore custom wedding ring trays, wedding favours, floral keepsakes, and bespoke handcrafted resin art at PrettyBits Cape Town.",
+      },
       { property: "og:title", content: "Handcrafted Resin Creations — PrettyBits" },
-      { property: "og:description", content: "Browse wedding keepsakes, ring trays, preserved flowers, and custom resin art." },
+      {
+        property: "og:description",
+        content: "Browse wedding keepsakes, ring trays, preserved flowers, and custom resin art.",
+      },
       { property: "og:image", content: ringTrayImg1 },
     ],
   }),
@@ -31,6 +38,7 @@ interface ProductItem {
   id: string;
   images: { src: string; alt: string }[];
   title: string;
+  enquiryName: string;
   categoryTag: string;
   description: string;
   enquiryType: "Custom Commission" | "Product Question" | "Workshop Booking" | "Other";
@@ -44,8 +52,10 @@ const products: ProductItem[] = [
       { src: ringTrayImg2, alt: "Custom Gold Leaf Ring Tray Details" },
     ],
     title: "Wedding Ring Trays",
+    enquiryName: "a Wedding Ring Tray",
     categoryTag: "Wedding Ring Tray",
-    description: "Elegantly crafted resin ring trays tailored with delicate gold leafing, personalized lettering, or preserved petals to hold your rings on your big day.",
+    description:
+      "Elegantly crafted resin ring trays tailored with delicate gold leafing, personalized lettering, or preserved petals to hold your rings on your big day.",
     enquiryType: "Custom Commission",
   },
   {
@@ -56,6 +66,7 @@ const products: ProductItem[] = [
       { src: weddingFavoursImg3, alt: "Custom Resin Wedding Favours" },
     ],
     title: "Wedding Favours",
+    enquiryName: "Wedding Favours",
     categoryTag: "Wedding Favours",
     description: "Heartfelt, custom-poured thank-you gifts for your guests.",
     enquiryType: "Custom Commission",
@@ -68,8 +79,10 @@ const products: ProductItem[] = [
       // { src: flowersImg3, alt: "Floral Tabletop Display" },
     ],
     title: "Flower Preservation & Keepsakes",
+    enquiryName: "a Floral Keepsake",
     categoryTag: "Floral Keepsake",
-    description: "Immortalise your bridal bouquet or special event blooms inside crystal-clear, archival resin blocks, arches, or resin hearts.",
+    description:
+      "Immortalise your bridal bouquet or special event blooms inside crystal-clear, archival resin blocks, arches, or resin hearts.",
     enquiryType: "Custom Commission",
   },
   {
@@ -79,8 +92,10 @@ const products: ProductItem[] = [
       { src: customImg2, alt: "Custom Resin Africa" },
     ],
     title: "Custom Commissions",
+    enquiryName: "a Custom Piece",
     categoryTag: "Custom Art",
-    description: "Have a unique vision? We collaborate directly with you to craft geode wall art, vanity trays, memory blocks, and custom color sets.",
+    description:
+      "Have a unique vision? We collaborate directly with you to craft geode wall art, vanity trays, memory blocks, and custom color sets.",
     enquiryType: "Custom Commission",
   },
 ];
@@ -163,7 +178,7 @@ function ProductCard({ product }: { product: ProductItem }) {
         <div className="mt-6 pt-4 border-t border-border/60">
           <Link
             to="/contact"
-            search={{ enquiry: product.enquiryType, product: product.title }}
+            search={{ enquiry: product.enquiryType, product: product.enquiryName }}
             className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80 transition-colors group/link"
           >
             Enquire about this piece
@@ -181,15 +196,28 @@ function ProductsPage() {
       {/* Hero Section with Creative Wording */}
       <section className="bg-gradient-hero border-b border-border/40">
         <div className="mx-auto max-w-7xl px-6 lg:px-10 py-20 lg:py-24 text-center">
-          <p className="font-script text-7xl text-primary">Made To Be Yours</p>
-          <h1 className="mt-3 font-display text-5xl lg:text-6xl font-semibold text-balance max-w-3xl mx-auto">
-            Custom Resin Creations
-          </h1>
-          <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-           From elegant wedding pieces and preserved flowers to statement art and wonderfully
-            unexpected keepsakes, we turn your ideas into one-of-a-kind pieces 
-            — no matter how sentimental, simple, or strange.
-          </p>
+          <div>
+            <p className="font-script text-7xl text-primary">Made To Be Yours</p>
+            <h1 className="mx-auto mt-3 font-display text-5xl lg:text-6xl font-semibold text-balance max-w-3xl">
+              Custom Resin Creations
+            </h1>
+            <p className="mx-auto mt-6 text-lg text-muted-foreground max-w-2xl leading-relaxed">
+              From elegant wedding pieces and preserved flowers to statement art and wonderfully
+              unexpected keepsakes, we turn your ideas into one-of-a-kind pieces — no matter how
+              sentimental, simple, or strange.
+            </p>
+
+            <div className="mt-8">
+              <Link
+                to="/contact"
+                search={{ enquiry: "Custom Commission" }}
+                className="inline-flex items-center gap-2.5 rounded-xl bg-primary px-7 py-3.5 font-display font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
+              >
+                Start a Custom Enquiry
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -199,29 +227,6 @@ function ProductsPage() {
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
-        </div>
-      </section>
-
-      {/* Custom Commission CTA Banner */}
-      <section className="bg-secondary/40 border-t border-border py-20">
-        <div className="mx-auto max-w-5xl px-6 lg:px-10 text-center">
-          
-          <h2 className="font-display text-3xl lg:text-4xl font-semibold">
-            Envisioning something completely unique?
-          </h2>
-          <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
-            Whether you want to preserve your bridal bouquet or bring a custom resin project to life, we'd love to make it happen.
-          </p>
-          <div className="mt-8">
-            <Link
-              to="/contact"
-              search={{ enquiry: "Custom Commission" }}
-              className="inline-flex items-center gap-2.5 rounded-xl bg-primary px-7 py-3.5 font-display font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
-            >
-              Start a Custom Enquiry
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
         </div>
       </section>
     </>

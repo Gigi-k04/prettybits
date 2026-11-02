@@ -6,11 +6,13 @@ import {
   type BookingItem,
 } from "../lib/bookings";
 
-const WHATSAPP_NUMBER = "27834411311"; // keep in sync with workshops.tsx
+import { waLink } from "@/lib/whatsapp";
 
-function waLink(message: string): string {
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-}
+const dropdownArrowStyle = {
+  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
+  backgroundPosition: "right 1rem center",
+  backgroundRepeat: "no-repeat",
+};
 
 export interface WorkshopOption {
   name: string;
@@ -63,6 +65,13 @@ export function BookingForm({
   const [items, setItems] = useState<ItemRow[]>([makeRow(defaultWorkshop)]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const contactValid = Boolean(name.trim() && phone.trim());
+  const dateValid = availableDates.some((option) => !option.full &&
+    `${option.date}${option.time ? `, ${option.time}` : ""}` === date);
+  const itemsValid = items.length > 0 && items.every((row) =>
+    workshopOptions.some((option) => option.name === row.workshopName) &&
+    Number.isSafeInteger(row.quantity) && row.quantity >= 1);
+  const valid = contactValid && dateValid && itemsValid;
 
   const addItem = () => {
     setItems((rows) => [...rows, makeRow(defaultWorkshop)]);
@@ -89,11 +98,11 @@ export function BookingForm({
     e.preventDefault();
     setError(null);
 
-    if (!name || !phone || !date) {
+    if (!contactValid || !dateValid) {
       setError("Please fill in your name, phone number, and pick a date.");
       return;
     }
-    if (items.some((r) => !r.workshopName || Number(r.quantity) < 1)) {
+    if (!itemsValid) {
       setError("Please make sure every item has a workshop and a quantity of at least 1.");
       return;
     }
@@ -134,7 +143,7 @@ export function BookingForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="text-sm font-medium">Name</label>
+        <label className="text-sm font-medium">Name (required)</label>
         <input
           type="text"
           value={name}
@@ -146,7 +155,7 @@ export function BookingForm({
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-sm font-medium">Phone</label>
+          <label className="text-sm font-medium">Phone (required)</label>
           <input
             type="tel"
             value={phone}
@@ -167,11 +176,13 @@ export function BookingForm({
       </div>
 
       <div>
-        <label className="text-sm font-medium">Date</label>
+        <label className="text-sm font-medium">Date (required)</label>
         <select
+          required
           value={date}
           onChange={(e) => setDate(e.target.value)}
-          className="mt-1 w-full rounded-lg border border-border px-3 py-2 text-sm"
+          className="mt-1 w-full appearance-none rounded-lg border border-border pl-3 pr-10 py-2 text-sm"
+          style={dropdownArrowStyle}
         >
           {availableDates
             .filter((d) => !d.full)
@@ -195,7 +206,7 @@ export function BookingForm({
       {/* Items — each person can pick a different workshop/quantity */}
       <div>
         <div className="flex items-center justify-between">
-          <label className="text-sm font-medium">Who's making what?</label>
+          <label className="text-sm font-medium">Who's making what? (required)</label>
           <button
             type="button"
             onClick={addItem}
@@ -213,9 +224,12 @@ export function BookingForm({
           {items.map((row) => (
             <div key={row.id} className="flex items-center gap-1.5">
             <select
+              required
+              aria-label="Workshop type (required)"
               value={row.workshopName}
               onChange={(e) => updateItem(row.id, { workshopName: e.target.value })}
-              className="flex-1 min-w-0 rounded-lg border border-border px-2 py-2 text-xs"
+              className="flex-1 min-w-0 appearance-none rounded-lg border border-border pl-2 pr-10 py-2 text-xs"
+              style={dropdownArrowStyle}
             >
               {workshopOptions.map((w) => (
                 <option key={w.name} value={w.name}>
@@ -225,6 +239,8 @@ export function BookingForm({
             </select>
             <input
               type="number"
+              required
+              step={1}
               min={1}
               value={row.quantity}
               onChange={(e) =>
@@ -265,10 +281,15 @@ export function BookingForm({
       </div>
 
       {error && <p className="text-sm text-red-600">{error}</p>}
+      {!valid && (
+        <p className="text-sm text-muted-foreground">
+          Please enter your name and phone number, choose an available date, and select a workshop and quantity of at least 1 for every item.
+        </p>
+      )}
 
       <button
         type="submit"
-        disabled={submitting}
+        disabled={submitting || !valid}
         className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-gradient-teal text-primary-foreground px-6 py-3 text-sm font-medium shadow-soft disabled:opacity-60"
       >
         {submitting ? (

@@ -50,7 +50,7 @@ function HomePage() {
             </h1>
             <p className="mt-6 text-lg text-muted-foreground max-w-lg leading-relaxed">
               Beautifully unique, handcrafted resin pieces and beginner-friendly
-              workshops.
+              workshops and starter kits.
             </p>
             <div className="mt-10 flex flex-col sm:flex-row gap-4">
               <Link
@@ -95,10 +95,7 @@ function HomePage() {
               height={1280}
               className="relative rounded-3xl shadow-elevated w-full h-auto object-cover aspect-4/5 lg:aspect-5/6"
             />
-            <div className="absolute -bottom-6 -left-6 bg-background rounded-2xl shadow-card p-5 max-w-200px hidden sm:block">
-              <p className="font-script text-xl text-primary">Just poured</p>
-              <p className="text-xs text-muted-foreground mt-1">Each piece, one of a kind. No two are ever the same.</p>
-            </div>
+            
           </div>
         </div>
       </section>
@@ -179,7 +176,7 @@ function HomePage() {
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
               <Link
-                to="/book"
+                to="/workshops"
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-background text-primary px-8 py-4 text-base font-medium hover:bg-accent hover:text-accent-foreground transition-colors"
               >
                 Book Your Spot <ArrowRight className="h-4 w-4" />

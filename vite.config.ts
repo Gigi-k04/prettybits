@@ -14,7 +14,7 @@ export default defineConfig({
     sitemap({
   hostname: "https://prettybits.co.za",
   generateRobotsTxt: true,
-  dynamicRoutes: ["/workshops", "/courses", "/products", "/custom", "/contact"],
+  dynamicRoutes: ["/workshops", "/courses", "/products", "/starter-kit", "/contact"],
 }),
   ],
 });

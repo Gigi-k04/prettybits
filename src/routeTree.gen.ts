@@ -12,10 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkshopsRouteImport } from './routes/workshops'
 import { Route as StarterKitRouteImport } from './routes/starter-kit'
 import { Route as ProductsRouteImport } from './routes/products'
-import { Route as CustomRouteImport } from './routes/custom'
 import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as ContactRouteImport } from './routes/contact'
-import { Route as BookRouteImport } from './routes/book'
 import { Route as IndexRouteImport } from './routes/index'
 
 const WorkshopsRoute = WorkshopsRouteImport.update({
@@ -33,11 +31,6 @@ const ProductsRoute = ProductsRouteImport.update({
   path: '/products',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CustomRoute = CustomRouteImport.update({
-  id: '/custom',
-  path: '/custom',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const CoursesRoute = CoursesRouteImport.update({
   id: '/courses',
   path: '/courses',
@@ -48,11 +41,6 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BookRoute = BookRouteImport.update({
-  id: '/book',
-  path: '/book',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -61,20 +49,16 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/book': typeof BookRoute
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRoute
-  '/custom': typeof CustomRoute
   '/products': typeof ProductsRoute
   '/starter-kit': typeof StarterKitRoute
   '/workshops': typeof WorkshopsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/book': typeof BookRoute
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRoute
-  '/custom': typeof CustomRoute
   '/products': typeof ProductsRoute
   '/starter-kit': typeof StarterKitRoute
   '/workshops': typeof WorkshopsRoute
@@ -82,10 +66,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/book': typeof BookRoute
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRoute
-  '/custom': typeof CustomRoute
   '/products': typeof ProductsRoute
   '/starter-kit': typeof StarterKitRoute
   '/workshops': typeof WorkshopsRoute
@@ -94,30 +76,24 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/book'
     | '/contact'
     | '/courses'
-    | '/custom'
     | '/products'
     | '/starter-kit'
     | '/workshops'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/book'
     | '/contact'
     | '/courses'
-    | '/custom'
     | '/products'
     | '/starter-kit'
     | '/workshops'
   id:
     | '__root__'
     | '/'
-    | '/book'
     | '/contact'
     | '/courses'
-    | '/custom'
     | '/products'
     | '/starter-kit'
     | '/workshops'
@@ -125,10 +101,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  BookRoute: typeof BookRoute
   ContactRoute: typeof ContactRoute
   CoursesRoute: typeof CoursesRoute
-  CustomRoute: typeof CustomRoute
   ProductsRoute: typeof ProductsRoute
   StarterKitRoute: typeof StarterKitRoute
   WorkshopsRoute: typeof WorkshopsRoute
@@ -157,13 +131,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/custom': {
-      id: '/custom'
-      path: '/custom'
-      fullPath: '/custom'
-      preLoaderRoute: typeof CustomRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/courses': {
       id: '/courses'
       path: '/courses'
@@ -178,13 +145,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/book': {
-      id: '/book'
-      path: '/book'
-      fullPath: '/book'
-      preLoaderRoute: typeof BookRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -197,10 +157,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  BookRoute: BookRoute,
   ContactRoute: ContactRoute,
   CoursesRoute: CoursesRoute,
-  CustomRoute: CustomRoute,
   ProductsRoute: ProductsRoute,
   StarterKitRoute: StarterKitRoute,
   WorkshopsRoute: WorkshopsRoute,

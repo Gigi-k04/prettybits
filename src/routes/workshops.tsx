@@ -49,10 +49,7 @@ export const Route = createFileRoute("/workshops")({
   component: WorkshopsPage,
 });
 
-const WHATSAPP_NUMBER = "27834411311";
-
-const waLink = (message: string) =>
-  `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+import { waLink } from "@/lib/whatsapp";
 
 const standardWorkshops = [
   { name: "Coaster & Bookmark", price: 290, image: coasterbmimage },

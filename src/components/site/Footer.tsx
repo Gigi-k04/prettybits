@@ -43,7 +43,7 @@ export function Footer() {
             <li><Link to="/workshops" className="hover:text-primary">Workshops</Link></li>
             <li><Link to="/courses" className="hover:text-primary">Courses</Link></li>
             <li><Link to="/products" className="hover:text-primary">Products</Link></li>
-            {/* <li><Link to="/book" className="hover:text-primary">Book Now</Link></li> */}
+            <li><Link to="/starter-kit" className="hover:text-primary">Starter Kits</Link></li>
             <li><Link to="/contact" className="hover:text-primary">Contact</Link></li>
           </ul>
         </div>

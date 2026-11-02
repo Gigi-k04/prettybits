@@ -4,6 +4,10 @@ import { Mail, Phone, MapPin, Instagram, MessageCircle } from "lucide-react";
 
 
 export const Route = createFileRoute("/contact")({
+  validateSearch: (search: Record<string, unknown>): { enquiry?: string; product?: string } => ({
+    enquiry: typeof search.enquiry === "string" ? search.enquiry : undefined,
+    product: typeof search.product === "string" ? search.product : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Contact — PrettyBits Cape Town" },
@@ -29,7 +33,7 @@ function ContactPage() {
     phone: "",
     enquiry_type: search?.enquiry || "",
     message: search?.product
-      ? `Hi! I would like to enquire about making a custom ${search.product}.`
+      ? `Hi! I would like to enquire about ordering ${search.product}.`
       : "",
   });
 
@@ -40,7 +44,7 @@ function ContactPage() {
         ...prev,
         enquiry_type: search?.enquiry || prev.enquiry_type,
         message: search?.product
-          ? `Hi! I would like to enquire about making a custom ${search.product}.`
+          ? `Hi! I would like to enquire about ordering ${search.product}.`
           : prev.message,
       }));
     }
@@ -118,7 +122,7 @@ function ContactPage() {
             We'd love to hear from you.
           </h1>
           <p className="mt-6 text-lg text-muted-foreground max-w-xl mx-auto">
-            Custom commissions, workshop questions, or any other enquiries - please contact us below.
+            Custom orders, workshop questions, or any other enquiries - please contact us below.
           </p>
         </div>
       </section>
