@@ -33,6 +33,7 @@ for (const ext of [".ts", ".tsx"]) {
 require.extensions[".jpg"] = (module) => {
   module.exports = "/placeholder.jpg";
 };
+require.extensions[".jpeg"] = require.extensions[".jpg"];
 const { starterKits, starterKitColours } = require("../src/data/starter-kits.ts");
 const {
   starterKitPricing,
@@ -69,7 +70,7 @@ test("exactly two included colours required; duplicates and unknown colours reje
   for (const included of [
     [],
     ["Pink"],
-    ["Pink", "White", "Blue"],
+    ["Pink", "White", "Light blue"],
     ["Pink", "Pink"],
     ["Pink", "Unknown"],
   ]) {
@@ -77,7 +78,7 @@ test("exactly two included colours required; duplicates and unknown colours reje
     assert.throws(() => buildStarterKitMessage(starterKits[0], included, []));
   }
   assert.equal(isValidColourSelection(["Pink", "White"], ["Pink"]), false);
-  assert.equal(isValidColourSelection(["Pink", "White"], ["Blue", "Blue"]), false);
+  assert.equal(isValidColourSelection(["Pink", "White"], ["Light blue", "Light blue"]), false);
   assert.equal(isValidColourSelection(["Pink", "White"], []), true);
 });
 
@@ -99,7 +100,7 @@ test("all kits calculate R5 per extra colour and update when removed", () => {
 
 test("WhatsApp requests contain each kit and accurate encoded pricing", () => {
   for (const kit of starterKits) {
-    const message = buildStarterKitMessage(kit, ["Pink", "White"], ["Purple", "Blue"]);
+    const message = buildStarterKitMessage(kit, ["Pink", "White"], ["Purple", "Light blue"]);
     const url = new URL(waLink(message));
     assert.equal(url.pathname, "/27834411311");
     assert.equal(url.searchParams.get("text"), message);
@@ -108,7 +109,7 @@ test("WhatsApp requests contain each kit and accurate encoded pricing", () => {
       kit.name,
       `*Base Price:* R${kit.price}`,
       "1. Pink\n2. White",
-      "Purple, Blue",
+      "Purple, Light blue",
       "*Additional Colour Cost:* R10",
       `*Estimated Total:* R${kit.price + 10}`,
       "Please send me an invoice and payment details",
@@ -152,18 +153,18 @@ test("direct starter kit request opens without a kit or back link", () => {
 test("multiple kit types and quantities keep individual colours and accurate totals", () => {
   const items = [
     { kit: starterKits[0], colours: [
-      { included: ["Pink", "White"], additional: ["Blue"] },
-      { included: ["Gold", "Black"], additional: ["Red", "Green"] },
+      { included: ["Pink", "White"], additional: ["Light blue"] },
+      { included: ["Gold", "Black"], additional: ["Red", "Light green"] },
     ] },
     { kit: starterKits[1], colours: [
-      { included: ["Purple", "Silver"], additional: [] },
+      { included: ["Purple", "Charcoal"], additional: [] },
     ] },
   ];
   const expected = starterKits[0].price * 2 + starterKits[1].price + 15;
   assert.equal(isValidKitRequest(items), true);
   assert.equal(starterKitRequestTotal(items), expected);
   const message = buildStarterKitRequestMessage(items, { name: " Ada ", phone: " 0123456789 ", email: "ada@example.com" });
-  for (const value of ["*Quantity:* 2", "*Quantity:* 1", "Pink, White", "Gold, Black", "Purple, Silver", "Blue", "Red, Green", `*Estimated Total:* R${expected}`, "*Name:* Ada", "*Phone:* 0123456789", "*Email:* ada@example.com"])
+  for (const value of ["*Quantity:* 2", "*Quantity:* 1", "Pink, White", "Gold, Black", "Purple, Charcoal", "Light blue", "Red, Light green", `*Estimated Total:* R${expected}`, "*Name:* Ada", "*Phone:* 0123456789", "*Email:* ada@example.com"])
     assert.ok(message.includes(value), value);
   assert.equal(new URL(waLink(message)).searchParams.get("text"), message);
   assert.equal(starterKitRequestTotal(items.slice(1)), starterKits[1].price);

@@ -30,7 +30,6 @@ export interface WorkshopDate {
 interface BookingFormProps {
   workshopOptions: WorkshopOption[];
   availableDates: WorkshopDate[];
-  onClose?: () => void;
 }
 
 interface ItemRow {
@@ -48,7 +47,6 @@ function makeRow(defaultWorkshop: string): ItemRow {
 export function BookingForm({
   workshopOptions,
   availableDates,
-  onClose,
 }: BookingFormProps) {
   const defaultWorkshop = workshopOptions[0]?.name ?? "";
 
@@ -65,6 +63,8 @@ export function BookingForm({
   const [items, setItems] = useState<ItemRow[]>([makeRow(defaultWorkshop)]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [handoffAttempted, setHandoffAttempted] = useState(false);
+  const [copyStatus, setCopyStatus] = useState("");
   const contactValid = Boolean(name.trim() && phone.trim());
   const dateValid = availableDates.some((option) => !option.full &&
     `${option.date}${option.time ? `, ${option.time}` : ""}` === date);
@@ -94,8 +94,32 @@ export function BookingForm({
     0
   );
 
+  const bookingInput = {
+    name,
+    phone,
+    email,
+    items: items.map((r): BookingItem => ({
+      workshopName: r.workshopName,
+      workshopPrice: priceFor(r.workshopName),
+      quantity: Number(r.quantity),
+    })),
+    date,
+    notes,
+  };
+  const message = buildBookingWhatsAppMessage(bookingInput);
+
+  const copyMessage = async () => {
+    try {
+      await navigator.clipboard.writeText(message);
+      setCopyStatus("Booking message copied. Paste it into WhatsApp and send it to us.");
+    } catch {
+      setCopyStatus("Copy was unavailable. Select and copy the message below, then paste it into WhatsApp.");
+    }
+  };
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (submitting) return;
     setError(null);
 
     if (!contactValid || !dateValid) {
@@ -108,32 +132,22 @@ export function BookingForm({
     }
 
     setSubmitting(true);
+    setHandoffAttempted(true);
+    setCopyStatus("");
+    // Open during the submit gesture, before waiting for Firestore can let the
+    // browser's transient user activation expire. A return value cannot prove WhatsApp opened
+    // (noopener can return null too), so always keep the manual fallback visible.
     try {
-      const bookingItems: BookingItem[] = items.map((r) => ({
-        workshopName: r.workshopName,
-        workshopPrice: priceFor(r.workshopName),
-        quantity: Number(r.quantity),
-      }));
-
-      const bookingInput = {
-        name,
-        phone,
-        email,
-        items: bookingItems,
-        date,
-        notes,
-      };
-
-      await createBooking(bookingInput);
-
-      const message = buildBookingWhatsAppMessage(bookingInput);
-
       window.open(waLink(message), "_blank", "noopener,noreferrer");
-      onClose?.();
+    } catch {
+      setError("WhatsApp could not be opened. Use the link below or copy your booking message.");
+    }
+    try {
+      await createBooking(bookingInput);
     } catch (err) {
       console.error("Booking submission failed:", err);
       setError(
-        "Something went wrong submitting your booking. Please try again or message us directly."
+        "We couldn't save your booking details. You can still open WhatsApp below or copy the message and send it to us."
       );
     } finally {
       setSubmitting(false);
@@ -281,6 +295,43 @@ export function BookingForm({
       </div>
 
       {error && <p className="text-sm text-red-600">{error}</p>}
+      {handoffAttempted && (
+        <div className="space-y-3 rounded-lg border border-border p-3">
+          <p role="status" className="text-sm text-muted-foreground">
+            Your booking request still needs to be sent in WhatsApp. If WhatsApp
+            didn't open, use the button below or copy your message. Your details
+            remain here so you can edit them and try again.
+          </p>
+          <a
+            href={waLink(message)}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-disabled={!valid}
+            onClick={(event) => { if (!valid) event.preventDefault(); }}
+            className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-gradient-teal text-primary-foreground px-6 py-3 text-sm font-medium shadow-soft"
+          >
+            <MessageCircle className="h-4 w-4" />
+            Open WhatsApp manually
+          </a>
+          <button
+            type="button"
+            onClick={copyMessage}
+            disabled={!valid}
+            className="w-full rounded-full border border-border px-6 py-3 text-sm font-medium disabled:opacity-60"
+          >
+            Copy booking message
+          </button>
+          <textarea
+            aria-label="Booking message to copy"
+            readOnly
+            value={message}
+            rows={5}
+            className="w-full rounded-lg border border-border px-3 py-2 text-sm"
+            onFocus={(event) => event.target.select()}
+          />
+          {copyStatus && <p role="status" className="text-sm text-muted-foreground">{copyStatus}</p>}
+        </div>
+      )}
       {!valid && (
         <p className="text-sm text-muted-foreground">
           Please enter your name and phone number, choose an available date, and select a workshop and quantity of at least 1 for every item.
@@ -297,11 +348,11 @@ export function BookingForm({
         ) : (
           <MessageCircle className="h-4 w-4" />
         )}
-        {submitting ? "Submitting..." : "Submit & continue on WhatsApp"}
+        {submitting ? "Saving details..." : "Continue on WhatsApp"}
       </button>
 
       <p className="text-xs text-muted-foreground text-center">
-        Your spot is only confirmed once payment is received. We will follow up with payment instructions on WhatsApp after you submit this form.
+        Please send the pre-filled message in WhatsApp to request your booking and payment instructions. Opening WhatsApp does not send it. Your spot is only confirmed once payment is received.
       </p>
     </form>
   );

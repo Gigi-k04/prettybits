@@ -453,7 +453,6 @@ function WorkshopsPage() {
        <BookingForm
         workshopOptions={standardWorkshops}
         availableDates={upcomingStandardDates}
-        onClose={() => setBookingModal(null)}
       />
       </Modal>
 
@@ -465,7 +464,6 @@ function WorkshopsPage() {
         <BookingForm
           workshopOptions={riverTableWorkshops}
           availableDates={upcomingRiverTableDates}
-          onClose={() => setBookingModal(null)}
         />
       </Modal>
     </>
