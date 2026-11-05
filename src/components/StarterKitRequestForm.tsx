@@ -14,6 +14,8 @@ import {
   starterKitPricing,
   type KitRequestItem,
 } from "@/lib/starter-kit-request";
+import { QuantitySelector } from "./QuantitySelector";
+import { ItemSelect } from "./ItemSelect";
 import { waLink } from "@/lib/whatsapp";
 import { useEffect, useRef } from "react";
 
@@ -122,13 +124,13 @@ export function StarterKitRequestForm({ kit, onBack }: { kit?: StarterKit; onBac
         <div
           key={item.id}
           ref={itemIndex === items.length - 1 ? lastItemRef : undefined}
-          className="scroll-mt-4 rounded-xl border border-border p-4 space-y-5"
+          className="scroll-mt-4 rounded-xl border border-border p-3 sm:p-4 space-y-5"
         >
-          <div className="flex items-end gap-2">
+          <div className="flex items-end gap-1 sm:gap-1.5">
             <label className="flex-1 min-w-0 text-sm font-medium">
               Starter kit {itemIndex + 1} (required)
               <div className="relative mt-1">
-                <select
+                <ItemSelect
                   required
                   value={item.kit?.id ?? ""}
                   onChange={(event) =>
@@ -136,7 +138,7 @@ export function StarterKitRequestForm({ kit, onBack }: { kit?: StarterKit; onBac
                       kit: starterKits.find((option) => option.id === event.target.value) ?? null,
                     })
                   }
-                  className="w-full appearance-none rounded-lg border border-border pl-2 pr-10 py-2 text-xs"
+                  className="h-10 sm:h-11 w-full appearance-none rounded-lg border border-border pl-1 pr-5 py-2 text-xs"
                 >
                   <option value="" disabled>
                     Choose a starter kit
@@ -146,24 +148,20 @@ export function StarterKitRequestForm({ kit, onBack }: { kit?: StarterKit; onBac
                       {option.name} (R{option.price})
                     </option>
                   ))}
-                </select>
+                </ItemSelect>
                 <ChevronDown
                   aria-hidden="true"
-                  className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
+                  className="pointer-events-none absolute right-1 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
                 />
               </div>
             </label>
-            <label className="text-sm font-medium">
-              Qty
-              <input
-                type="number"
-                required
-                min={1}
-                step={1}
+            <div className="shrink-0 space-y-1">
+              <span className="block text-sm font-medium">Qty</span>
+              <QuantitySelector
+                label={`Starter kit ${itemIndex + 1} quantity`}
                 value={item.colours.length}
-                onChange={(event) => {
-                  const quantity = Number(event.target.value);
-                  if (!Number.isSafeInteger(quantity) || quantity < 1) return;
+                onChange={(quantity) => {
+                  if (quantity === item.colours.length) return;
                   updateItem(item.id, {
                     colours: Array.from(
                       { length: quantity },
@@ -171,15 +169,14 @@ export function StarterKitRequestForm({ kit, onBack }: { kit?: StarterKit; onBac
                     ),
                   });
                 }}
-                className="mt-1 block w-16 rounded-lg border border-border px-1 py-2 text-sm text-center"
               />
-            </label>
+            </div>
             <button
               type="button"
               disabled={items.length === 1}
               aria-label={`Remove starter kit ${itemIndex + 1}`}
               onClick={() => setItems((current) => current.filter((row) => row.id !== item.id))}
-              className="p-2 rounded-lg text-muted-foreground hover:text-red-600 hover:bg-red-50 disabled:opacity-30"
+              className="flex h-10 w-6 sm:h-11 sm:w-8 shrink-0 items-center justify-center rounded-lg text-muted-foreground hover:text-red-600 hover:bg-red-50 disabled:opacity-30"
             >
               <Trash2 className="h-4 w-4" />
             </button>

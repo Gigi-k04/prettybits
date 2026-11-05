@@ -6,6 +6,8 @@ import {
   type BookingItem,
 } from "../lib/bookings";
 
+import { QuantitySelector } from "./QuantitySelector";
+import { ItemSelect } from "./ItemSelect";
 import { waLink } from "@/lib/whatsapp";
 
 const dropdownArrowStyle = {
@@ -236,39 +238,31 @@ export function BookingForm({
 
         <div className="mt-3 space-y-2">
           {items.map((row) => (
-            <div key={row.id} className="flex items-center gap-1.5">
-            <select
+            <div key={row.id} className="flex items-center gap-1 sm:gap-1.5">
+            <ItemSelect
               required
               aria-label="Workshop type (required)"
               value={row.workshopName}
               onChange={(e) => updateItem(row.id, { workshopName: e.target.value })}
-              className="flex-1 min-w-0 appearance-none rounded-lg border border-border pl-2 pr-10 py-2 text-xs"
-              style={dropdownArrowStyle}
+              className="h-10 sm:h-11 flex-1 min-w-0 appearance-none rounded-lg border border-border pl-1 pr-5 py-2 text-xs"
+              style={{ ...dropdownArrowStyle, backgroundPosition: "right 0.25rem center" }}
             >
               {workshopOptions.map((w) => (
                 <option key={w.name} value={w.name}>
                   {w.name} (R{w.price})
                 </option>
               ))}
-            </select>
-            <input
-              type="number"
-              required
-              step={1}
-              min={1}
+            </ItemSelect>
+            <QuantitySelector
               value={row.quantity}
-              onChange={(e) =>
-                updateItem(row.id, { quantity: Number(e.target.value) })
-              }
-              className="w-12 rounded-lg border border-border px-1 py-2 text-sm text-center"
-              aria-label="Quantity"
+              onChange={(quantity) => updateItem(row.id, { quantity })}
             />
             <button
               type="button"
               onClick={() => removeItem(row.id)}
               disabled={items.length === 1}
               aria-label="Remove item"
-              className="p-1.5 rounded-lg text-muted-foreground hover:text-red-600 hover:bg-red-50 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+              className="flex h-10 w-6 sm:h-11 sm:w-8 shrink-0 items-center justify-center rounded-lg text-muted-foreground hover:text-red-600 hover:bg-red-50 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
             >
               <Trash2 className="h-4 w-4" />
             </button>
@@ -348,7 +342,7 @@ export function BookingForm({
         ) : (
           <MessageCircle className="h-4 w-4" />
         )}
-        {submitting ? "Saving details..." : "Continue on WhatsApp"}
+        {submitting ? "Saving details..." : "Request booking in WhatsApp"}
       </button>
 
       <p className="text-xs text-muted-foreground text-center">

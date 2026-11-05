@@ -35,6 +35,7 @@ export const starterKits: StarterKit[] = [
       "Nitrile gloves",
       "Mask",
       "Instructions",
+      "FREE glitter with every order",
     ],
   },
   {
@@ -63,7 +64,7 @@ export const starterKits: StarterKit[] = [
     image: CementCoasterImage,
     imageAlt: "Cement Coaster — cement coaster image",
     description:
-      "Decorate your own cement coaster.",
+      "Transform this blank canvas into a stunning coaster with your own unique resin design. It's a fun way to add a personal touch to your space.",
     contents: [
       "Cement hexagon coaster mould x1",
       "Resin and Hardener",
@@ -82,7 +83,7 @@ export const starterKits: StarterKit[] = [
     image: TrinketTrayImage,
     imageAlt: "Cement Trinket Tray — trinket tray image",
     description:
-      "Try an example decorative trinket tray project in your own colours.",
+      "Design a decorative trinket tray with your own unique resin touch. It's a blank canvas waiting for you.",
     contents: [
       "Cement trinket tray mould x1",
       "Resin and Hardener",
@@ -101,7 +102,7 @@ export const starterKits: StarterKit[] = [
     image: siliconeCoasterImage,
     imageAlt: "Silicone Coaster — silicone coaster image",
     description:
-      "Create your own round silicone coaster.",
+      "Have fun creating your very own resin coaster! You can gift it to a friend or simply enjoy looking at it during your next coffee break.",
     contents: [
       "Silicone coaster mould x1",
       "Resin and Hardener",

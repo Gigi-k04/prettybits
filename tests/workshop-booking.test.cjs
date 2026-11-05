@@ -43,6 +43,8 @@ function harness(save, open = () => null) {
       },
     },
     "../lib/bookings": { ...bookings, createBooking: save },
+    "./QuantitySelector": { QuantitySelector: "quantity-selector" },
+    "./ItemSelect": { ItemSelect: "select" },
     "@/lib/whatsapp": whatsapp,
   });
   global.window = { open };

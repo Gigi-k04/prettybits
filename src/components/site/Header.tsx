@@ -159,19 +159,20 @@ export function Header() {
               Products
             </Link>
             <Link
-              to="/contact"
-              onClick={() => setOpen(false)}
-              className="text-base font-medium text-foreground"
-            >
-              Contact
-            </Link>
-            <Link
               to="/starter-kit"
               onClick={() => setOpen(false)}
               className="text-base font-medium text-foreground"
             >
               Starter Kits
             </Link>
+            <Link
+              to="/contact"
+              onClick={() => setOpen(false)}
+              className="text-base font-medium text-foreground"
+            >
+              Contact
+            </Link>
+            
           </div>
         </div>
       )}
