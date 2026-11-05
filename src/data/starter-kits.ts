@@ -35,7 +35,7 @@ export const starterKits: StarterKit[] = [
       "Nitrile gloves",
       "Mask",
       "Instructions",
-      "FREE glitter with every order",
+      "FREE glitter",
     ],
   },
   {
@@ -55,6 +55,7 @@ export const starterKits: StarterKit[] = [
       "Nitrile gloves",
       "Mask",
       "Instructions",
+      "FREE glitter",
     ],
   },
   {
@@ -74,6 +75,7 @@ export const starterKits: StarterKit[] = [
       "Nitrile gloves",
       "Mask",
       "Instructions",
+      "FREE glitter",
     ],
   },
   {
@@ -93,6 +95,7 @@ export const starterKits: StarterKit[] = [
       "Nitrile gloves",
       "Mask",
       "Instructions",
+      "FREE glitter",
     ],
   },
   {
@@ -112,6 +115,7 @@ export const starterKits: StarterKit[] = [
       "Nitrile gloves",
       "Mask",
       "Instructions",
+      "FREE glitter",
     ],
   },
 ];
