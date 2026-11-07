@@ -1,12 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Sparkles, Heart, Palette } from "lucide-react";
-import heroImg from "@/assets/hero-resin.jpg";
-import workshopImg from "@/assets/Pouring Resin 2.jpeg";
+import heroImg from "@/assets/heroImg.jpeg";
+
 import weddingFavoursImg from "@/assets/Wedding Favours 3.jpeg";
 import weddingRingTrayImg from "@/assets/Rectangle Ring Tray 3.jpeg";
 import flowersImg from "@/assets/Flower Hexagon 3.jpeg";
 import customImg from "@/assets/Rock.jpeg";
-import starterKitImg from "@/assets/starter-kit.jpg";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -91,9 +91,9 @@ function HomePage() {
             <img
               src={heroImg}
               alt="Handcrafted teal and gold resin coasters by PrettyBits"
-              width={1920}
+              width={1280}
               height={1280}
-              className="relative rounded-3xl shadow-elevated w-full h-auto object-cover aspect-4/5 lg:aspect-5/6"
+              className="relative rounded-3xl shadow-elevated w-full h-auto object-cover aspect-square"
             />
             
           </div>
