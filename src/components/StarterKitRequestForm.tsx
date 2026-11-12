@@ -254,7 +254,7 @@ export function StarterKitRequestForm({ kit, onBack }: { kit?: StarterKit; onBac
                     <details key={group} className="group/colours rounded-lg border border-border">
                       <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2 text-sm font-medium [&::-webkit-details-marker]:hidden focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2">
                         <span>
-                          Additional colours — R{EXTRA_COLOUR_PRICE} each
+                          Additional colours — R{EXTRA_COLOUR_PRICE} each (includes extra mixing cups and sticks)
                           <span className="mt-1 block text-xs font-normal text-muted-foreground">
                             {additional.length
                               ? `${additional.join(", ")} · R${additionalCost}`

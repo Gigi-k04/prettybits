@@ -121,7 +121,7 @@ export const starterKits: StarterKit[] = [
 ];
 
 export const INCLUDED_COLOUR_COUNT = 2;
-export const EXTRA_COLOUR_PRICE = 5;
+export const EXTRA_COLOUR_PRICE = 10;
 export const starterKitColours = [
   { name: "Pink", hex: "#ed9fbd" },
   { name: "Purple", hex: "#9563b5" },
