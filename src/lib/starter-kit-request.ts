@@ -24,6 +24,8 @@ export interface KitRequestItem {
   colours: { included: string[]; additional: string[] }[];
 }
 
+export type DeliveryMethod = "Collection" | "Delivery/Courier";
+
 export function starterKitRequestTotal(items: KitRequestItem[]) {
   return items.reduce(
     (sum, item) =>
@@ -51,12 +53,13 @@ export function isValidKitRequest(items: KitRequestItem[]) {
 
 export function buildStarterKitRequestMessage(
   items: KitRequestItem[],
-  contact: { name: string; phone: string; email?: string },
+  contact: { name: string; phone: string; email?: string; deliveryMethod: DeliveryMethod },
 ) {
   if (!isValidKitRequest(items)) throw new Error("Choose two included colours for every kit.");
   return [
     "Hello PrettyBits! I would like to request starter kits.",
     `*Name:* ${contact.name.trim()}\n*Phone:* ${contact.phone.trim()}${contact.email?.trim() ? `\n*Email:* ${contact.email.trim()}` : ""}`,
+    `*Delivery Method:* ${contact.deliveryMethod}`,
     ...items.map((item, index) =>
       [
         `*${index + 1}. ${item.kit.name}*\n*Quantity:* ${item.colours.length}\n*Base price per kit:* R${item.kit.price}`,
@@ -68,7 +71,9 @@ export function buildStarterKitRequestMessage(
       ].join("\n\n"),
     ),
     `*Estimated Total:* R${starterKitRequestTotal(items)}`,
-    "Please send me an invoice and payment details to complete my order. Thank you!",
+    contact.deliveryMethod === "Delivery/Courier"
+      ? "Please help me arrange delivery and send me an invoice including delivery costs and payment details to complete my order. Thank you!"
+      : "Please send me an invoice and payment details to complete my order. Thank you!",
   ].join("\n\n");
 }
 

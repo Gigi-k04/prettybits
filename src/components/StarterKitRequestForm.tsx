@@ -13,6 +13,7 @@ import {
   starterKitRequestTotal,
   starterKitPricing,
   type KitRequestItem,
+  type DeliveryMethod,
 } from "@/lib/starter-kit-request";
 import { QuantitySelector } from "./QuantitySelector";
 import { ItemSelect } from "./ItemSelect";
@@ -23,6 +24,7 @@ export function StarterKitRequestForm({ kit, onBack }: { kit?: StarterKit; onBac
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod | "">("");
   const [items, setItems] = useState<
     (Omit<KitRequestItem, "kit"> & { id: number; kit: StarterKit | null })[]
   >([{ id: 0, kit: kit ?? null, colours: [{ included: [], additional: [] }] }]);
@@ -53,9 +55,9 @@ export function StarterKitRequestForm({ kit, onBack }: { kit?: StarterKit; onBac
     setItems((current) => current.map((item) => (item.id === id ? { ...item, ...patch } : item)));
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!valid || !contactValid) return;
+    if (!valid || !contactValid || !deliveryMethod) return;
     window.open(
-      waLink(buildStarterKitRequestMessage(selectedItems, { name, phone, email })),
+      waLink(buildStarterKitRequestMessage(selectedItems, { name, phone, email, deliveryMethod })),
       "_blank",
       "noopener,noreferrer",
     );
@@ -103,6 +105,32 @@ export function StarterKitRequestForm({ kit, onBack }: { kit?: StarterKit; onBac
           />
         </label>
       </div>
+      <fieldset className="space-y-3">
+        <legend className="text-sm font-medium">Delivery Method (required)</legend>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {(["Collection", "Delivery/Courier"] as const).map((method) => (
+            <label key={method} className="flex items-start gap-3 rounded-xl border border-border p-3 text-sm has-checked:border-primary has-checked:bg-secondary/40">
+              <input
+                type="radio"
+                name="deliveryMethod"
+                value={method}
+                checked={deliveryMethod === method}
+                onChange={() => setDeliveryMethod(method)}
+                required
+                className="mt-1 accent-primary"
+              />
+              <span className="min-w-0">
+                <span className="block font-medium">{method}</span>
+                <span className="mt-1 block text-muted-foreground">
+                  {method === "Delivery/Courier"
+                    ? "Delivery details will be confirmed on WhatsApp."
+                    : "(Goodwood, Cape Town)"}
+                </span>
+              </span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
       <div className="flex items-center justify-between">
         <h3 className="font-display text-lg font-semibold">Your starter kits</h3>
         <button
@@ -296,6 +324,7 @@ export function StarterKitRequestForm({ kit, onBack }: { kit?: StarterKit; onBac
       <p className="text-sm text-muted-foreground">
         Send your request through WhatsApp. PrettyBits will send an invoice and payment details to
         complete your order.
+        {deliveryMethod === "Delivery/Courier" && " Delivery costs will be added to your invoice."}
       </p>
       {!valid && (
         <p className="text-sm text-muted-foreground">
@@ -307,7 +336,7 @@ export function StarterKitRequestForm({ kit, onBack }: { kit?: StarterKit; onBac
       )}
       <button
         type="submit"
-        disabled={!valid || !contactValid}
+        disabled={!valid || !contactValid || !deliveryMethod}
         className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-teal text-primary-foreground px-6 py-3.5 text-sm font-medium shadow-soft hover:shadow-elevated transition-all disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <MessageCircle className="h-4 w-4" />

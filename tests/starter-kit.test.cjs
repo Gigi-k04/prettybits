@@ -82,7 +82,7 @@ test("exactly two included colours required; duplicates and unknown colours reje
   assert.equal(isValidColourSelection(["Pink", "White"], []), true);
 });
 
-test("all kits calculate R5 per extra colour and update when removed", () => {
+test("all kits calculate R10 per extra colour and update when removed", () => {
   const extras = starterKitColours
     .map((c) => c.name)
     .filter((name) => !["Pink", "White"].includes(name));
@@ -90,11 +90,11 @@ test("all kits calculate R5 per extra colour and update when removed", () => {
     for (let count = 0; count <= extras.length; count++) {
       const selected = extras.slice(0, count);
       assert.deepEqual(starterKitPricing(kit, selected), {
-        additionalCost: count * 5,
-        total: kit.price + count * 5,
+        additionalCost: count * 10,
+        total: kit.price + count * 10,
       });
       if (count)
-        assert.equal(starterKitPricing(kit, selected.slice(1)).total, kit.price + (count - 1) * 5);
+        assert.equal(starterKitPricing(kit, selected.slice(1)).total, kit.price + (count - 1) * 10);
     }
 });
 
@@ -110,8 +110,8 @@ test("WhatsApp requests contain each kit and accurate encoded pricing", () => {
       `*Base Price:* R${kit.price}`,
       "1. Pink\n2. White",
       "Purple, Light blue",
-      "*Additional Colour Cost:* R10",
-      `*Estimated Total:* R${kit.price + 10}`,
+      "*Additional Colour Cost:* R20",
+      `*Estimated Total:* R${kit.price + 20}`,
       "Please send me an invoice and payment details",
     ])
       assert.ok(message.includes(value));
@@ -131,6 +131,9 @@ test("request initially blocks submission; shared modal renders only when open",
   assert.ok(form.includes(`R${starterKits[0].price}`) && form.includes("Choose two included colours"));
   assert.match(form, /autocomplete="name"/i);
   assert.ok(form.includes('type="tel"'));
+  assert.equal((form.match(/name="deliveryMethod"/g) || []).length, 2);
+  assert.ok(form.includes("(Goodwood, Cape Town)"));
+  assert.ok(form.includes("Costs will be added to your invoice."));
   assert.equal((form.match(/<option /g) || []).length, starterKits.length + 1);
   for (const open of [false, true]) {
     const html = renderToStaticMarkup(
@@ -150,6 +153,17 @@ test("direct starter kit request opens without a kit or back link", () => {
   assert.match(form, /type="submit" disabled=""/);
 });
 
+test("WhatsApp request includes the chosen delivery method", () => {
+  const items = [{ kit: starterKits[0], colours: [{ included: ["Pink", "White"], additional: [] }] }];
+  for (const deliveryMethod of ["Collection", "Delivery/Courier"]) {
+    const message = buildStarterKitRequestMessage(items, { name: "Ada", phone: "0123", deliveryMethod });
+    assert.ok(message.includes(`*Delivery Method:* ${deliveryMethod}`));
+    assert.equal(message.includes("Please help me arrange delivery"), deliveryMethod === "Delivery/Courier");
+    if (deliveryMethod === "Delivery/Courier") assert.ok(message.includes("invoice including delivery costs"));
+    assert.equal(new URL(waLink(message)).searchParams.get("text"), message);
+  }
+});
+
 test("multiple kit types and quantities keep individual colours and accurate totals", () => {
   const items = [
     { kit: starterKits[0], colours: [
@@ -160,16 +174,18 @@ test("multiple kit types and quantities keep individual colours and accurate tot
       { included: ["Purple", "Charcoal"], additional: [] },
     ] },
   ];
-  const expected = starterKits[0].price * 2 + starterKits[1].price + 15;
+  const expected = starterKits[0].price * 2 + starterKits[1].price + 30;
   assert.equal(isValidKitRequest(items), true);
   assert.equal(starterKitRequestTotal(items), expected);
-  const message = buildStarterKitRequestMessage(items, { name: " Ada ", phone: " 0123456789 ", email: "ada@example.com" });
+  const message = buildStarterKitRequestMessage(items, { name: " Ada ", phone: " 0123456789 ", email: "ada@example.com", deliveryMethod: "Delivery/Courier" });
+  assert.ok(message.includes("*Delivery Method:* Delivery/Courier"));
+  assert.ok(buildStarterKitRequestMessage(items, { name: "Ada", phone: "0123", deliveryMethod: "Collection" }).includes("*Delivery Method:* Collection"));
   for (const value of ["*Quantity:* 2", "*Quantity:* 1", "Pink, White", "Gold, Black", "Purple, Charcoal", "Light blue", "Red, Light green", `*Estimated Total:* R${expected}`, "*Name:* Ada", "*Phone:* 0123456789", "*Email:* ada@example.com"])
     assert.ok(message.includes(value), value);
   assert.equal(new URL(waLink(message)).searchParams.get("text"), message);
   assert.equal(starterKitRequestTotal(items.slice(1)), starterKits[1].price);
   items[0].colours.pop();
-  assert.equal(starterKitRequestTotal(items), expected - starterKits[0].price - 10);
+  assert.equal(starterKitRequestTotal(items), expected - starterKits[0].price - 20);
   items[0].colours[0].included = ["Pink"];
   assert.equal(isValidKitRequest(items), false);
   assert.throws(() => buildStarterKitRequestMessage(items, { name: "Ada", phone: "0123" }));
